@@ -27,7 +27,7 @@ vector <pair <int,int>> object;
 void gotoxy(int column, int line) {
     COORD coord;
     coord.X = column;
-    coord.Y = line;
+    coord.Y = line + 1;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
@@ -51,14 +51,16 @@ bool collisionWithObject(const vector<pair<int, int>>& object, int x, int y) {
     return false;
 }
 
-int main() {
-    int width, height, speed;
-    cout << "Enter the width of the border (must be even): ";
-    cin >> width; width *= 2;
-    cout << "Enter the height of the border: ";
-    cin >> height;
-    cout << "Enter the speed's level of the snake from 1 (slowest) to 5 (fastest): ";
-    cin >> speed;
+int main(int argc, char* argv[]) {
+    if (argc != 4) {
+        cout << "Usage: ./snake_game <width> <height> <speed_level>" << endl;
+        cout << "Example: ./snake_game 40 20 1" << endl;
+        return 1;
+    }
+
+    cout << "\n\n\n\n\n\n\n\n\n";
+
+    int width = atoi(argv[1]) * 2, height = atoi(argv[2]), speed_level = atoi(argv[3]);
 
     char direction = 'd';
     bool gameOver = false;
@@ -74,9 +76,11 @@ int main() {
 
     // Place the first food
     srand(time(0));
-    object.push_back({rand() % ((width - 2) / 2) * 2 + 1, rand() % (height - 2) + 1}); // Ensure food is within the border
-    gotoxy(object[0].first, object[0].second);
-    cout << '*';
+    int foodX, foodY;
+    do {
+        foodX = (rand() % ((width - 2) / 2)) * 2 + 1;  
+        foodY = rand() % (height - 2) + 1; 
+    } while (collisionWithObject(snake, foodX, foodY));
 
     while (!gameOver) {
         // Clear previous snake position
@@ -131,7 +135,6 @@ int main() {
             object.pop_back();
 
             // Place new food
-            int foodX, foodY;
             do {
                 foodX = (rand() % ((width - 2) / 2)) * 2 + 1;
                 foodY = rand() % (height - 2) + 1;
@@ -150,7 +153,7 @@ int main() {
             cout << 'o';
         }
 
-        Sleep(100/speed); // Delay for game speed
+        Sleep(100/speed_level); // Delay for game speed
     }
 
     // Game over message
