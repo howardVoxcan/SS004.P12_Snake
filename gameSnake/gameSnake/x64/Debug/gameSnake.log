@@ -1,0 +1,3 @@
+﻿  main.cpp
+D:\VSCODE\gameSnake\gameSnake\main.cpp(189,19): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  gameSnake.vcxproj -> D:\VSCODE\gameSnake\x64\Debug\gameSnake.exe
