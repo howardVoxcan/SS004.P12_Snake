@@ -6,7 +6,7 @@ using namespace std;
 
 // Định nghĩa ký hiệu và các thông số ban đầu
 #define DOT_RAN 254
-#define MAX 100
+#define MAX 10000
 #define LEN 1
 #define XUONG 2
 #define TRAI 3
@@ -94,8 +94,8 @@ int main() {
 
 // Khởi tạo rắn ban đầu
 void KhoiTaoRan() {
-    ran[0].x = TUONG_TRAI + 3;
-    ran[1].x = TUONG_TRAI + 2;
+    ran[0].x = TUONG_TRAI + 5;
+    ran[1].x = TUONG_TRAI + 3;
     ran[2].x = TUONG_TRAI + 1;
     ran[0].y = ran[1].y = ran[2].y = TUONG_TREN + 1;
     SoDot = 3; // Đặt lại số đốt của rắn
@@ -120,8 +120,8 @@ ToaDo DiChuyen(int huong) {
     switch (huong) {
     case LEN: ran[0].y--; break;
     case XUONG: ran[0].y++; break;
-    case TRAI: ran[0].x--; break;
-    case PHAI: ran[0].x++; break;
+    case TRAI: ran[0].x-=2; break;
+    case PHAI: ran[0].x+=2; break;
     }
     return lasttail;
 }
@@ -186,11 +186,24 @@ void XuLiThua() {
 // Hiển thị mồi
 ToaDo HienThiMoi() {
     ToaDo moi;
+    bool valid;
+
     do {
+        valid = true;
         srand(time(0));
         moi.x = TUONG_TRAI + 1 + rand() % (TUONG_PHAI - TUONG_TRAI - 1);
+        while (moi.x % 2 != 0)  
+            moi.x = TUONG_TRAI + 1 + rand() % (TUONG_PHAI - TUONG_TRAI - 1);
         moi.y = TUONG_TREN + 1 + rand() % (TUONG_DUOI - TUONG_TREN - 1);
-    } while (moi.x <= TUONG_TRAI || moi.x >= TUONG_PHAI || moi.y <= TUONG_TREN || moi.y >= TUONG_DUOI);
+
+        // Kiểm tra mồi không trùng với bất kỳ đốt nào của rắn
+        for (int i = 0; i < SoDot; i++) {
+            if (moi.x == ran[i].x && moi.y == ran[i].y) {
+                valid = false;
+                break;
+            }
+        }
+    } while (!valid || moi.x <= TUONG_TRAI || moi.x >= TUONG_PHAI || moi.y <= TUONG_TREN || moi.y >= TUONG_DUOI);
 
     gotoXY(moi.x, moi.y);
     cout << '*';
@@ -213,16 +226,20 @@ void Menu() {
     clrscr();
     cout << "===== SNAKE GAME MENU =====" << endl;
     cout << "1. Select difficulty:" << endl;
-    cout << "   [1] Easy   (Slow)" << endl;
-    cout << "   [2] Medium (Normal)" << endl;
-    cout << "   [3] Hard   (Fast)" << endl;
+    cout << "   [1] Very Easy   (Very Slow)" << endl;
+    cout << "   [2] Easy   (Slow)" << endl;
+    cout << "   [3] Medium   (Normal)" << endl;
+    cout << "   [4] Hard (Fast)" << endl;
+    cout << "   [5] Very Hard   (Very Fast)" << endl;
     cout << "Enter your choice: ";
     int difficulty;
     cin >> difficulty;
     switch (difficulty) {
     case 1: speed = 300; break;
-    case 2: speed = 200; break;
-    case 3: speed = 100; break;
+    case 2: speed = 250; break;
+    case 3: speed = 200; break;
+    case 4: speed = 150; break;
+    case 5: speed = 100; break;
     default: speed = 200; break;
     }
 
@@ -231,6 +248,7 @@ void Menu() {
         cout << "\n2. Enter board size:" << endl;
         cout << "   Width (min 20, max 100): ";
         cin >> TUONG_PHAI;
+        TUONG_PHAI *= 2;
         TUONG_PHAI += TUONG_TRAI; // Tính vị trí biên phải
         cout << "   Height (min 10, max 27): ";
         cin >> TUONG_DUOI;
