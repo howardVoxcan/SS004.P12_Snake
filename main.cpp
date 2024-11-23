@@ -1,10 +1,12 @@
-﻿#include <iostream>
-#include "kmin_console.h"
+#include <iostream>
 #include <cstdlib>
 #include<ctime>
+#include <stdio.h>
+#include <conio.h>
+#include <windows.h>
 using namespace std;
 
-// Định nghĩa ký hiệu và các thông số ban đầu
+
 #define DOT_RAN 254
 #define MAX 10000
 #define LEN 1
@@ -13,6 +15,11 @@ using namespace std;
 #define PHAI 4
 #define TUONG_TREN 2
 #define TUONG_TRAI 3
+#define KEY_UP		72
+#define KEY_DOWN	80
+#define KEY_LEFT	75
+#define KEY_RIGHT	77
+#define KEY_NONE	-1
 
 // Biến toàn cục
 struct ToaDo {
@@ -39,6 +46,19 @@ void ThemDot();
 bool KiemTraChamThan();
 void Menu();
 void ThietLapDoKhoVaKichThuoc();
+// Lấy nút bàn phím do người dùng bấm
+// Trả về: Mã của phím
+int inputKey();
+// Xóa màn hình
+void clrscr();
+// Di chuyển con trỏ console đến vị trí có tọa độ (x, y)
+void gotoXY (int x, int y);
+// Lấy tọa độ x hiện tại của con trỏ console
+int whereX();
+// Lấy tọa độ y hiện tại của con trỏ console
+int whereY();
+// Xóa con trỏ nháy
+void noCursorType();
 
 int main() {
     Menu();
@@ -246,10 +266,10 @@ void Menu() {
     // Kiểm tra kích thước ván chơi
     while (true) {
         cout << "\n2. Enter board size:" << endl;
-        cout << "   Width (min 20, max 100): ";
+        cout << "   Width (min 20, max 70): ";
         cin >> TUONG_PHAI;
         TUONG_PHAI *= 2;
-        TUONG_PHAI += TUONG_TRAI; // Tính vị trí biên phải
+        TUONG_PHAI += TUONG_TRAI + 1; // Tính vị trí biên phải
         cout << "   Height (min 10, max 27): ";
         cin >> TUONG_DUOI;
         TUONG_DUOI += TUONG_TREN; // Tính vị trí biên dưới
@@ -265,4 +285,77 @@ void Menu() {
     }
 
     clrscr();
+}int inputKey()
+{
+	if (_kbhit())
+	{
+		int key = _getch();
+
+		if (key == 224)
+		{
+			key = _getch();
+			return key + 1000;
+		}
+
+		return key;
+	}
+	else
+	{
+		return KEY_NONE;
+	}
+
+	return KEY_NONE;
+}
+
+// Xóa màn hình
+void clrscr()
+{
+	CONSOLE_SCREEN_BUFFER_INFO	csbiInfo;                  
+	HANDLE	hConsoleOut;
+	COORD	Home = {0,0};
+	DWORD	dummy;
+
+	hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	GetConsoleScreenBufferInfo(hConsoleOut,&csbiInfo);
+
+	FillConsoleOutputCharacter(hConsoleOut,' ',csbiInfo.dwSize.X * csbiInfo.dwSize.Y,Home,&dummy);
+	csbiInfo.dwCursorPosition.X = 0;
+	csbiInfo.dwCursorPosition.Y = 0;
+	SetConsoleCursorPosition(hConsoleOut,csbiInfo.dwCursorPosition);
+}
+
+// Di chuyển con trỏ console đến vị trí có tọa độ (x, y)
+void gotoXY (int x, int y)
+{
+	COORD coord;
+	coord.X = x;
+	coord.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
+}
+
+// Lấy tọa độ x hiện tại của con trỏ console
+int whereX()
+{
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	if(GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+		return csbi.dwCursorPosition.X;
+	return -1;
+}
+
+// Lấy tọa độ y hiện tại của con trỏ console
+int whereY()
+{
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	if(GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+		return csbi.dwCursorPosition.Y;
+	return -1;
+}
+
+// Xóa con trỏ nháy
+void noCursorType()
+{
+	CONSOLE_CURSOR_INFO info;
+	info.bVisible = FALSE;
+	info.dwSize = 20;
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
 }
