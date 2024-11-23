@@ -28,6 +28,26 @@ Snake là một trò chơi cổ điển nơi bạn điều khiển một con r�
 
 ## 3. Hướng dẫn run code sau khi clone code về
 ### Bước 1: Clone repository
-Sử dụng lệnh sau để tải code về:
+Di chuyển tới thư mục tải game snake:
 ```bash
-git clone <URL của repository>
+cd /.../.../...
+```
+
+Tại thư mục, dùng lệnh git clone sau để clone về máy :
+```bash
+git clone https://github.com/howardVoxcan/SS004.P12_Snake.git
+```
+
+### Bước 2: Khởi chạy code và run code
+Thực hiện lệnh biên dịch sau:
+```bash
+g++ snake.cpp -o <Tên dùng để khởi chạy>
+./<Tên dùng để khởi chạy ở trên>
+```
+
+##Chúc bạn chơi game vui vẻ! 🎮
+
+
+
+
+
