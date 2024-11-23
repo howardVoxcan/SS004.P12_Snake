@@ -15,11 +15,17 @@ using namespace std;
 #define PHAI 4
 #define TUONG_TREN 2
 #define TUONG_TRAI 3
-#define KEY_UP		72
-#define KEY_DOWN	80
-#define KEY_LEFT	75
-#define KEY_RIGHT	77
+#define KEY_UP1		1072
+#define KEY_DOWN1	1080
+#define KEY_LEFT1	1075
+#define KEY_RIGHT1	1077
 #define KEY_NONE	-1
+#define KEY_UP2		72
+#define KEY_DOWN2	80
+#define KEY_LEFT2	75
+#define KEY_RIGHT2	77
+int current_huong;
+
 
 // Biến toàn cục
 struct ToaDo {
@@ -52,7 +58,7 @@ int inputKey();
 // Xóa màn hình
 void clrscr();
 // Di chuyển con trỏ console đến vị trí có tọa độ (x, y)
-void gotoXY (int x, int y);
+void gotoXY(int x, int y);
 // Lấy tọa độ x hiện tại của con trỏ console
 int whereX();
 // Lấy tọa độ y hiện tại của con trỏ console
@@ -65,7 +71,9 @@ int main() {
     while (true) {
         KhoiTaoRan();
         int huong = PHAI;
+        current_huong = huong;
         int score = 0;
+       
         VeTuong();
         ToaDo moi = HienThiMoi();
 
@@ -76,6 +84,7 @@ int main() {
         while (true) {
             ToaDo lasttail = DiChuyen(huong);
             BatSuKien(huong);
+            current_huong = huong;
             HienThiRan(lasttail);
             if (KiemTraAnMoi(moi)) {
                 moi = HienThiMoi();
@@ -114,9 +123,9 @@ int main() {
 
 // Khởi tạo rắn ban đầu
 void KhoiTaoRan() {
-    ran[0].x = TUONG_TRAI + 5;
-    ran[1].x = TUONG_TRAI + 3;
-    ran[2].x = TUONG_TRAI + 1;
+    ran[0].x = TUONG_TRAI + 6;
+    ran[1].x = TUONG_TRAI + 4;
+    ran[2].x = TUONG_TRAI + 2;
     ran[0].y = ran[1].y = ran[2].y = TUONG_TREN + 1;
     SoDot = 3; // Đặt lại số đốt của rắn
 }
@@ -140,8 +149,8 @@ ToaDo DiChuyen(int huong) {
     switch (huong) {
     case LEN: ran[0].y--; break;
     case XUONG: ran[0].y++; break;
-    case TRAI: ran[0].x-=2; break;
-    case PHAI: ran[0].x+=2; break;
+    case TRAI: ran[0].x -= 2; break;
+    case PHAI: ran[0].x += 2; break;
     }
     return lasttail;
 }
@@ -149,10 +158,10 @@ ToaDo DiChuyen(int huong) {
 // Bắt sự kiện điều khiển
 void BatSuKien(int& huong) {
     int key = inputKey();
-    if (key == KEY_UP && huong != XUONG) huong = LEN;
-    else if (key == KEY_DOWN && huong != LEN) huong = XUONG;
-    else if (key == KEY_LEFT && huong != PHAI) huong = TRAI;
-    else if (key == KEY_RIGHT && huong != TRAI) huong = PHAI;
+    if (key == KEY_UP1 || key == KEY_UP2 && current_huong != XUONG) huong = LEN;
+    else if (key == KEY_DOWN1 || key == KEY_DOWN2 && current_huong != LEN) huong = XUONG;
+    else if (key == KEY_LEFT1 || key == KEY_LEFT2 && current_huong != PHAI) huong = TRAI;
+    else if (key == KEY_RIGHT1 || key == KEY_RIGHT2 && current_huong != TRAI) huong = PHAI;
 }
 
 // Vẽ tường
@@ -212,7 +221,7 @@ ToaDo HienThiMoi() {
         valid = true;
         srand(time(0));
         moi.x = TUONG_TRAI + 1 + rand() % (TUONG_PHAI - TUONG_TRAI - 1);
-        while (moi.x % 2 != 0)  
+        while (moi.x % 2 == 0)
             moi.x = TUONG_TRAI + 1 + rand() % (TUONG_PHAI - TUONG_TRAI - 1);
         moi.y = TUONG_TREN + 1 + rand() % (TUONG_DUOI - TUONG_TREN - 1);
 
@@ -266,16 +275,16 @@ void Menu() {
     // Kiểm tra kích thước ván chơi
     while (true) {
         cout << "\n2. Enter board size:" << endl;
-        cout << "   Width (min 20, max 70): ";
+        cout << "   Width (min 20, max 50): ";
         cin >> TUONG_PHAI;
         TUONG_PHAI *= 2;
-        TUONG_PHAI += TUONG_TRAI + 1; // Tính vị trí biên phải
+        TUONG_PHAI += TUONG_TRAI  ; // Tính vị trí biên phải
         cout << "   Height (min 10, max 27): ";
         cin >> TUONG_DUOI;
         TUONG_DUOI += TUONG_TREN; // Tính vị trí biên dưới
 
         // Kiểm tra xem kích thước có hợp lệ không
-        if ((TUONG_PHAI - TUONG_TRAI >= 40 && TUONG_PHAI - TUONG_TRAI <= 140) &&
+        if ((TUONG_PHAI - TUONG_TRAI >= 40 && TUONG_PHAI - TUONG_TRAI <= 100) &&
             (TUONG_DUOI - TUONG_TREN >= 10 && TUONG_DUOI - TUONG_TREN <= 27)) {
             break; // Kích thước hợp lệ
         }
@@ -287,75 +296,75 @@ void Menu() {
     clrscr();
 }int inputKey()
 {
-	if (_kbhit())
-	{
-		int key = _getch();
+    if (_kbhit())
+    {
+        int key = _getch();
 
-		if (key == 224)
-		{
-			key = _getch();
-			return key + 1000;
-		}
+        if (key == 224)
+        {
+            key = _getch();
+            return key + 1000;
+        }
 
-		return key;
-	}
-	else
-	{
-		return KEY_NONE;
-	}
+        return key;
+    }
+    else
+    {
+        return KEY_NONE;
+    }
 
-	return KEY_NONE;
+    return KEY_NONE;
 }
 
 // Xóa màn hình
 void clrscr()
 {
-	CONSOLE_SCREEN_BUFFER_INFO	csbiInfo;                  
-	HANDLE	hConsoleOut;
-	COORD	Home = {0,0};
-	DWORD	dummy;
+    CONSOLE_SCREEN_BUFFER_INFO	csbiInfo;
+    HANDLE	hConsoleOut;
+    COORD	Home = { 0,0 };
+    DWORD	dummy;
 
-	hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	GetConsoleScreenBufferInfo(hConsoleOut,&csbiInfo);
+    hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(hConsoleOut, &csbiInfo);
 
-	FillConsoleOutputCharacter(hConsoleOut,' ',csbiInfo.dwSize.X * csbiInfo.dwSize.Y,Home,&dummy);
-	csbiInfo.dwCursorPosition.X = 0;
-	csbiInfo.dwCursorPosition.Y = 0;
-	SetConsoleCursorPosition(hConsoleOut,csbiInfo.dwCursorPosition);
+    FillConsoleOutputCharacter(hConsoleOut, ' ', csbiInfo.dwSize.X * csbiInfo.dwSize.Y, Home, &dummy);
+    csbiInfo.dwCursorPosition.X = 0;
+    csbiInfo.dwCursorPosition.Y = 0;
+    SetConsoleCursorPosition(hConsoleOut, csbiInfo.dwCursorPosition);
 }
 
 // Di chuyển con trỏ console đến vị trí có tọa độ (x, y)
-void gotoXY (int x, int y)
+void gotoXY(int x, int y)
 {
-	COORD coord;
-	coord.X = x;
-	coord.Y = y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
 // Lấy tọa độ x hiện tại của con trỏ console
 int whereX()
 {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	if(GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-		return csbi.dwCursorPosition.X;
-	return -1;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+        return csbi.dwCursorPosition.X;
+    return -1;
 }
 
 // Lấy tọa độ y hiện tại của con trỏ console
 int whereY()
 {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	if(GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-		return csbi.dwCursorPosition.Y;
-	return -1;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+        return csbi.dwCursorPosition.Y;
+    return -1;
 }
 
 // Xóa con trỏ nháy
 void noCursorType()
 {
-	CONSOLE_CURSOR_INFO info;
-	info.bVisible = FALSE;
-	info.dwSize = 20;
-	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+    CONSOLE_CURSOR_INFO info;
+    info.bVisible = FALSE;
+    info.dwSize = 20;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
 }
