@@ -275,7 +275,7 @@ void Menu() {
         TUONG_DUOI += TUONG_TREN; // Tính vị trí biên dưới
 
         // Kiểm tra xem kích thước có hợp lệ không
-        if ((TUONG_PHAI - TUONG_TRAI >= 20 && TUONG_PHAI - TUONG_TRAI <= 100) &&
+        if ((TUONG_PHAI - TUONG_TRAI >= 40 && TUONG_PHAI - TUONG_TRAI <= 140) &&
             (TUONG_DUOI - TUONG_TREN >= 10 && TUONG_DUOI - TUONG_TREN <= 27)) {
             break; // Kích thước hợp lệ
         }
