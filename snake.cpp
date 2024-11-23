@@ -294,7 +294,9 @@ void Menu() {
     }
 
     clrscr();
-}int inputKey()
+}
+
+int inputKey()
 {
     if (_kbhit())
     {
