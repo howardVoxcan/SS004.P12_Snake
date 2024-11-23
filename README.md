@@ -8,7 +8,7 @@ Snake là một trò chơi cổ điển nơi bạn điều khiển một con r�
 - Điểm số được ghi lại và hiển thị trực tiếp.
 - Giao diện đơn giản nhưng không kém phần hấp dẫn.
 
-![Snake Game](https://upload.wikimedia.org/wikipedia/commons/1/1c/Snake_game.svg)
+![Snake Game](https://www.coolmathgames.com/sites/default/files/Snake_OG-logo.jpg)
 
 ---
 
